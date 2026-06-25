@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Assistant — Prompt Engineering Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark">⌁</span>
+    <div>
+      <h1>AI Assistant <span class="brand-sub">/ Prompt Lab</span></h1>
+      <p class="brand-tagline">One assistant, four jobs, three prompt designs each.</p>
+    </div>
+  </div>
+  {% if demo_mode %}
+  <div class="demo-banner" title="No GEMINI_API_KEY found — showing canned demo answers so you can still test the whole flow.">
+    DEMO MODE — no API key set, showing sample answers
+  </div>
+  {% endif %}
+</header>
+
+<main class="layout">
+
+  <!-- Function tabs -->
+  <nav class="function-tabs" id="functionTabs">
+    {% for key, fn in prompt_library.items() %}
+    <button class="tab tab-{{ fn.color }}" data-function="{{ key }}">
+      <span class="tab-tagline">{{ fn.tagline }}</span>
+      <span class="tab-label">{{ fn.label }}</span>
+    </button>
+    {% endfor %}
+  </nav>
+
+  <section class="workbench">
+
+    <!-- Left: input + prompt style picker -->
+    <div class="panel panel-input">
+      <h2 class="panel-title">1. Choose a prompt style</h2>
+      <div class="style-cards" id="styleCards"></div>
+
+      <h2 class="panel-title">2. Your input</h2>
+      <textarea id="userInput" rows="6" placeholder="..."></textarea>
+
+      <button id="generateBtn" class="btn btn-primary">Generate response →</button>
+      <p class="hint" id="errorHint"></p>
+    </div>
+
+    <!-- Right: prompt inspector + AI response + feedback -->
+    <div class="panel panel-output">
+      <h2 class="panel-title">3. What was actually sent</h2>
+      <pre class="prompt-inspector" id="promptInspector">Pick a style and click "Generate response" to see the exact prompt here.</pre>
+
+      <h2 class="panel-title">4. AI response</h2>
+      <div class="response-box" id="responseBox">
+        <p class="placeholder-text">The assistant's answer will appear here.</p>
+      </div>
+
+      <div class="feedback-row" id="feedbackRow" hidden>
+        <span class="feedback-label">Was this response helpful?</span>
+        <button class="feedback-btn" data-helpful="true">👍 Yes</button>
+        <button class="feedback-btn" data-helpful="false">👎 No</button>
+        <span class="feedback-confirm" id="feedbackConfirm"></span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Feedback dashboard -->
+  <section class="dashboard">
+    <h2 class="panel-title">Feedback so far <span class="dashboard-hint">(this is the data you'd use to refine the prompts)</span></h2>
+    <div class="dashboard-grid" id="dashboardGrid"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  Built for the "AI Assistant Development" prompt-engineering project.
+</footer>
+
+<script id="promptLibraryData" type="application/json">{{ prompt_library | tojson }}</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
